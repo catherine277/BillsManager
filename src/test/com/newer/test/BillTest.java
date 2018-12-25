@@ -38,4 +38,10 @@ public class BillTest {
         System.out.println(billService.updateBill(3,1));
 
     }
+
+    @Test
+    public void test77(){
+        System.out.println("王佳洁是真蠢");
+
+    }
 }
