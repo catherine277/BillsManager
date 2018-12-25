@@ -38,4 +38,8 @@ public class BillTest {
         System.out.println(billService.updateBill(3,1));
 
     }
+    @Test
+    public  void test(){
+        System.out.println("xiaoxiao");
+    }
 }
