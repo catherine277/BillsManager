@@ -44,4 +44,13 @@ public class BillTest {
         System.out.println("王佳洁是真蠢2");
 
     }
+    @Test
+    public  void test(){
+        System.out.println("xiaoxiao");
+    }
+
+    @Test
+    public void test5(){
+        System.out.println("IG牛逼！");
+    }
 }
