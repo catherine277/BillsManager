@@ -53,4 +53,9 @@ public class BillTest {
     public void test5(){
         System.out.println("IG牛逼！");
     }
+
+    @Test
+    public void test7(){
+        System.out.println("艾克出技能卡");
+    }
 }
