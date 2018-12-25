@@ -38,4 +38,9 @@ public class BillTest {
         System.out.println(billService.updateBill(3,1));
 
     }
+
+    @Test
+    public void test5(){
+        System.out.println("IG牛逼！");
+    }
 }
