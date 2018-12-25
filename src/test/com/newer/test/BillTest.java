@@ -41,7 +41,7 @@ public class BillTest {
 
     @Test
     public void test77(){
-        System.out.println("王佳洁是真蠢");
+        System.out.println("王佳洁是真蠢2");
 
     }
 }
