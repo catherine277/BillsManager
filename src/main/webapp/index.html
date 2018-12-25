@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>货单管理平台</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap.min.css">
+
+    <!--js操作-->
+      <script src="js/jquery-3.3.1.min.js"></script>
+      <script type="text/javascript">
+          $(function () {
+              //查询所有没有发货以及在派送的订单显示到页面
+              find()
+              /*
+              新增订单
+               */
+              $("#btnSave").click(function () {
+                  $.ajax({
+                      url:"bills",
+                      type:"post",
+                      data:$("#form1").serialize(),
+                      dataType:"json",
+                      success:function (data) {
+                          if(data.count=='1'){
+                              alert("新的订单已经生成")
+                              find()
+                          }else{
+                              alert("新的订单生成失败")
+                          }
+                      }
+                  })
+              })
+          })
+
+          /*
+            修改订单的状态，让订单发货
+           */
+          function changeStatus(id) {
+              $.ajax({
+                  url:"bills/"+id,
+                  type:"PUT",
+                  contentType:"application/json",
+                  dataType:"json",
+                  success:function (data) {
+                      if(data.count=='1'){
+                          alert("正在派送中")
+                          find()
+                      }else{
+                          alert("派送失败")
+                      }
+                  }
+
+              })
+
+          }
+
+        /*
+            查询所有没有发货以及在派送的订单显示到页面
+         */
+          function find() {
+              $.ajax({
+                  url:"bills/0",
+                  type:"GET",
+                  dataType:"json",
+                  success:function (data) {
+                      $("#tab1 tr").remove()
+                      if(data.bills){
+
+                          var bills = data.bills
+                          //alert(bills)
+                          $.each(bills,function () {
+                              var $tr=("<tr><td>"+this.id+"</td><td>"+this.name+"</td>" +
+                                  "<td>"+this.phone+"</td><td>"+this.address+"</td><td>"+this.sender+"</td>" +
+                                  "<td class='text-danger'>收单</td><td>" +
+                                  "<button type='button' class='btn btn-block btn-primary' onclick='changeStatus("+this.id+")'>发货</button></td></tr>")
+                              $("#tab1").append($tr)
+                          })
+
+                      }
+                  }
+              })
+              //查询所有在派送的订单
+              $.ajax({
+                  url:"bills/1",
+                  type:"GET",
+                  dataType:"json",
+                  success:function (data) {
+                      $("#tab2 tr").remove()
+                      if(data.bills){
+                          var bills = data.bills
+                          //alert(bills)
+                          $.each(bills,function () {
+                              var $tr=("<tr><td>"+this.id+"</td><td>"+this.name+"</td>" +
+                                  "<td>"+this.phone+"</td><td>"+this.address+"</td><td>"+this.sender+"</td>" +
+                                  "<td class=\"text-danger\">派送中</td><td>" +
+                                  "<button type='button' class='btn btn-block btn-secondary disabled' onclick=''>查看物流</button></td></tr>")
+                              $("#tab2").append($tr)
+                          })
+
+                      }
+                  }
+              })
+
+          }
+      </script>
+  </head>
+  <body>
+
+    <!-- 标题 -->
+    <div class="jumbotron jumbotron-fluid p-3">
+        <div class="container">
+            <h1 class="display-3">快递货单管理平台</h1>
+            <p class="lead"><span class="badge badge-pill badge-danger">牛耳教育</span></p>
+        </div>
+    </div>
+
+    <!-- 主体 -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-4 col-sm-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">新建货单</h4>
+                        <!-- 表单 新建货单 -->
+                        <form id="form1" action="">
+                            <div class="form-group">
+                                <label for="">收件人姓名</label>
+                                <input type="text"class="form-control"
+                                name="name"
+                                required
+                                placeholder="收件人姓名">
+                            </div>
+                            <div class="form-group">
+                                <label for="">收件人手机号</label>
+                                <input type="text"class="form-control"
+                                name="phone"
+                                required pattern="1\d{10}" maxlength="11"
+                                placeholder="收件人手机号">
+                            </div>
+                            <div class="form-group">
+                                <label for="">收件人地址</label>
+                                <input type="text"class="form-control"
+                                name="address"
+                                required
+                                placeholder="收件人地址">
+                            </div>
+                            <div class="form-group">
+                                <label for="">发件人姓名</label>
+                                <input type="text"class="form-control"
+                                name="sender"
+                                required
+                                placeholder="发件人姓名">
+                            </div>
+                            <div class="form-group">
+                                <label for="">发件人手机号</label>
+                                <input type="text"class="form-control"
+                                name="sname"
+                                required pattern="1\d{10}"  maxlength="11"
+                                placeholder="发件人手机号">
+                            </div>
+                            <button type="button" class="btn btn-block btn-success" id="btnSave">新建货单</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 col-sm-12">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>货单号</th>
+                            <th>收件人</th>
+                            <th>收件人手机号</th>
+                            <th>地址</th>
+                            <th>发件人</th>
+                            <th>货单状态</th>
+                            <th style="width:15%">操作</th>
+                        </tr>
+                        </tr>
+                    </thead>
+                    <tbody  id="tab1">
+
+                    </tbody>
+                </table>
+
+                <div class="alert alert-secondary text-center mt-3">
+                    <strong>已发货</strong>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>货单号</th>
+                            <th>收件人</th>
+                            <th>收件人手机号</th>
+                            <th>地址</th>
+                            <th>发件人</th>
+                            <th>货单状态</th>
+                            <th style="width:15%">操作</th>
+                        </tr>
+                        </tr>
+                    </thead>
+                    <tbody  id="tab2">
+                        <tr>
+                            <td>1</td>
+                            <td>小明</td>
+                            <td>18699999999</td>
+                            <td>江苏 南京 北京西路130号</td>
+                            <td>小美</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+      
+</body>
+</html>
